@@ -114,9 +114,10 @@ exports.removeProduct = async (req, res) => {
     try {
         const removedProduct = await ProductsSchema.findByIdAndRemove(productId);
         if (removedProduct) {
+            const owner = removedProduct.owner;
             await StoresSchema.findOneAndUpdate(
-                { _id: removedProduct.owner, storeProductLength: { $exists: true } },
-                { $inc: { storeProductLength: removedProduct.storeProductLength - 1 } }
+                { _id: owner, storeProductLength: { $exists: true } },
+                { $inc: { storeProductLength: -1 } }
             );
             res.status(200).json({
                 message: "Removed product successfully!",
@@ -133,7 +134,6 @@ exports.removeProduct = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
-
 
 exports.getProductById = async (req, res) => {
     const productId = req.params._id;
