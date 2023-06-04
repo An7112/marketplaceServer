@@ -3,6 +3,7 @@ const router = express.Router()
 const Stores = require('../controller/controller')
 const Products = require('../controller/productController')
 const History = require('../controller/history')
+const Auth = require('../controller/auth')
 const multer = require('multer');
 const upload = multer();
 
@@ -21,5 +22,10 @@ router.put('/products/:productId', upload.none(), Products.updateProduct)
 router.delete('/products/:productId', Products.removeProduct)
 
 router.get('/history', History.getHistory)
+
+router.post('/login', Auth.login)
+router.post('/register', Auth.register)
+router.post('/token', Auth.refresh)
+router.post('/logout', Auth.logout)
 
 module.exports = router

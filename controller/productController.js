@@ -114,6 +114,10 @@ exports.removeProduct = async (req, res) => {
     try {
         const removedProduct = await ProductsSchema.findByIdAndRemove(productId);
         if (removedProduct) {
+            await StoresSchema.findOneAndUpdate(
+                { _id: removedProduct.owner, storeProductLength: { $exists: true } },
+                { $inc: { storeProductLength: removedProduct.storeProductLength - 1 } }
+            );
             res.status(200).json({
                 message: "Removed product successfully!",
                 status: true,
